@@ -21,7 +21,7 @@
     "prepare:files": "node scripts/prepare-files.js",
     "prepare:all": "yarn build && yarn prepare:files",
     "publish:npm": "node scripts/publish.js",
-    "release": "yarn prepare:all && npm run publish:npm",
+    "release": "yarn test && yarn prepare:all && npm run publish:npm",
     "_postinstall": "husky install",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable",
