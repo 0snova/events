@@ -14,6 +14,9 @@ export type AnyIdentifiableEvent = IdentifiableEvent<any, string>;
 
 export type PickIdentifiableEvent<Event extends AnyEvent> = Event extends AnyIdentifiableEvent ? Event : never;
 
+export type EventListener<Event extends AnyEvent, E extends Event['type']> = (e: Event & { type: E }) => void;
+export type AnyEventListener = EventListener<AnyEvent, string>;
+
 export type EventCreator<P, T extends string> = (payload: P) => BaseEvent<P, T>;
 
 export function eventFactoryWrapper<T extends string>(type: T) {
