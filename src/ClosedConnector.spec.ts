@@ -1,13 +1,13 @@
 import { ClosedConnector } from './ClosedConnector';
+import { InferEventCreatorsMap } from './EventMap';
 import { makeEventCreator } from './Events';
-import { InferObjectFieldValues } from './lib/types';
 
 const testEvent1 = makeEventCreator<{ message: string }, 'TestEvent1'>('TestEvent1');
 const testEvent2 = makeEventCreator<{ value: number }, 'TestEvent2'>('TestEvent2');
 
 const events = { testEvent1, testEvent2 };
 
-type Events = ReturnType<InferObjectFieldValues<typeof events>>;
+type Events = InferEventCreatorsMap<typeof events>;
 
 test('should accept listenable events', () => {
   const c = new ClosedConnector<Events>();
