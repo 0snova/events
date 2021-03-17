@@ -3,7 +3,7 @@ const path = require('path');
 
 const skipEntries = ['devDependencies', 'publishConfig', 'scripts'];
 
-function makePackageJSON(originalPackageJSONContent) {
+module.exports.makePackageJSON = function makePackageJSON(originalPackageJSONContent) {
   const resultPkg = {};
 
   Object.entries(originalPackageJSONContent).forEach(([name, value]) => {
@@ -21,12 +21,10 @@ function makePackageJSON(originalPackageJSONContent) {
   });
 
   return resultPkg;
-}
+};
 
-function savePackageJSON(content) {
+module.exports.savePackageJSON = function savePackageJSON(content) {
   fs.writeFileSync(path.resolve(__dirname, '../dist/package.json'), JSON.stringify(content, undefined, 2), {
     encoding: 'utf-8',
   });
-}
-
-savePackageJSON(makePackageJSON(require('../package.json')));
+};
