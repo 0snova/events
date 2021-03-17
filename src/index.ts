@@ -1,2 +1,2 @@
-export type { BaseEvent, EventCreator, Unsubscribe } from './Events';
+export type { BaseEvent, EventCreator } from './Events';
 export { makeEventCreator, eventFactoryWrapper } from './Events';
