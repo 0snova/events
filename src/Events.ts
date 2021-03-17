@@ -1,9 +1,18 @@
-export type Unsubscribe = () => void;
+import { Identifiable } from './Identifiable';
 
 export type BaseEvent<P = unknown, T extends string = string> = {
   type: T;
   payload: P;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyEvent = BaseEvent<string, any>;
+
+export type IdentifiableEvent<P = unknown, T extends string = string> = BaseEvent<P, T> & Identifiable;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyIdentifiableEvent = IdentifiableEvent<string, any>;
+
+export type PickIdentifiableEvent<Event extends AnyEvent> = Event extends AnyIdentifiableEvent ? Event : never;
 
 export type EventCreator<P, T extends string> = (payload: P) => BaseEvent<P, T>;
 
