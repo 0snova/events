@@ -1,1 +1,2 @@
-export default { version: 0 };
+export type { BaseEvent, EventCreator, Unsubscribe } from './Events';
+export { makeEventCreator, eventFactoryWrapper } from './Events';
