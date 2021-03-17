@@ -1,7 +1,7 @@
 import { Unsubscribe } from './Unsubscribe';
 
-export type AnyListener = () => void;
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyListener = (e?: any) => void;
 type ListenersListMapInner<Key extends string, L extends AnyListener> = Map<Key, L[]>;
 
 export class ListenersMap<Key extends string, Listener extends AnyListener> {
