@@ -1,6 +1,14 @@
 export type { BaseEvent, EventCreator } from './Events';
 export { makeEventCreator, eventFactoryWrapper } from './Events';
 
+export type {
+  AnyIdentifiableEvent,
+  CastToIdentifiableEvent,
+  IdentifiableEvent,
+  PickIdentifiableEvent,
+} from './EventIdentifiable';
+export { makeIdentifiableEvent } from './EventIdentifiable';
+
 export type { InferEventFromCreatorsMap } from './EventMap';
 
 export type { BaseConnector } from './Connector.h';
