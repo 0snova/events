@@ -22,13 +22,17 @@ type AnyResponseEventMap = {
   [key: string]: AnyEventResponse;
 };
 
+function getEventResponseType<E extends AnyEvent>(event: E) {
+  return `${event.type}::response`;
+}
+
 export function makeResponseEvent<
   RequestEvent extends AnyIdentifiableEvent,
   P = unknown,
   T extends string = RequestEvent['type']
 >(requestEvent: RequestEvent, payload: P) {
   return {
-    type: `${requestEvent.type}::response`,
+    type: getEventResponseType(requestEvent),
     requestId: requestEvent.id,
     payload,
   } as EventResponse<P, `${T}::response`>;
@@ -54,7 +58,7 @@ export class RequestConnector<
   private responseListeners = new UnsubscribeMap<ResponseEventMap[keyof ResponseEventMap]['type']>();
 
   protected responseId: GetResponseId<ResponseEventMap[keyof ResponseEventMap]>;
-  protected responseType: GetResponseTypeForRequest<RequestEvent>;
+  protected responseType: GetResponseTypeForRequest<RequestEvent> = getEventResponseType;
   protected responseResult: GetResponseResult<ResponseEventMap[keyof ResponseEventMap], Response>;
 
   constructor(
@@ -62,12 +66,10 @@ export class RequestConnector<
     {
       responseId = (e) => e.requestId,
       responseResult = (e) => e.payload,
-      responseTypeForRequestEvent = (e) => e.type + '::response',
     }: RequestConnectorOptions<RequestEvent, ResponseEventMap[keyof ResponseEventMap]> = {}
   ) {
     super();
     this.responseId = responseId;
-    this.responseType = responseTypeForRequestEvent;
     this.responseResult = responseResult;
   }
 
