@@ -1,12 +1,11 @@
 import { ClosedConnector } from './ClosedConnector';
 import { InferEventFromCreatorsMap } from './EventMap';
 import { makeEventCreator } from './Events';
-import { CastToIdentifiableEvent, makeIdentifiableEvent } from './EventIdentifiable';
+import { CastToIdentifiableEvent } from './EventIdentifiable';
 import { InferResponseEventMap, makeResponseEvent, RequestConnector } from './RequestConnector';
+import { EventSender } from './EventSender';
 
 test(`should wait for response`, async () => {
-  let lastId = 0;
-
   const eventKEK = makeEventCreator<string, 'KEK'>('KEK');
   const eventLUL = makeEventCreator<number, 'LUL'>('LUL');
   const events = { eventKEK, eventLUL };
@@ -23,21 +22,7 @@ test(`should wait for response`, async () => {
   >;
 
   const target = new ClosedConnector<IdentifiableRequestEvent>();
-
-  const requester = new RequestConnector<RequestEvent, ResponseEventMap>({
-    async send(event) {
-      const id = event.type + lastId++;
-      const eventWithId = makeIdentifiableEvent<RequestEvent>(event, id);
-
-      // otherwise reponse listener to the specific request is not added yet
-      // when response comes.
-      setTimeout(() => {
-        target.accept(eventWithId);
-      }, 0);
-
-      return eventWithId;
-    },
-  });
+  const requester = new RequestConnector<RequestEvent, ResponseEventMap>(new EventSender<RequestEvent>(target));
 
   target.on('KEK', (event) => {
     requester.accept(makeResponseEvent(event, `request payload: ${event.payload}`));

@@ -11,6 +11,10 @@ export { makeIdentifiableEvent } from './EventIdentifiable';
 
 export type { InferEventFromCreatorsMap } from './EventMap';
 
+export type { EventSender as IEventSender, AsyncEventSenderWithId as IAsyncEventSenderWithId } from './EventSender.h';
+export type { Send } from './EventSender';
+export { sendLocallyASAP, EventSender } from './EventSender';
+
 export type { BaseConnector } from './Connector.h';
 export { ClosedConnector } from './ClosedConnector';
 

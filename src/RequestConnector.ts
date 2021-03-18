@@ -58,7 +58,7 @@ export class RequestConnector<
   protected responseResult: GetResponseResult<ResponseEventMap[keyof ResponseEventMap], Response>;
 
   constructor(
-    private bridge: AsyncEventSenderWithId<RequestEvent>,
+    private sender: AsyncEventSenderWithId<RequestEvent>,
     {
       responseId = (e) => e.requestId,
       responseResult = (e) => e.payload,
@@ -72,7 +72,7 @@ export class RequestConnector<
   }
 
   public async request<E extends RequestEvent>(event: E): Promise<Response> {
-    const { id: eventId } = await this.bridge.send(event);
+    const { id: eventId } = await this.sender.send(event);
     const responseType = this.responseType(event);
 
     return new Promise((resolve) => {
