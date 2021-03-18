@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type AnyFn = (...args: any) => any;
 
 export type InferObjectFieldValues<T> = T extends { [key: string]: infer U } ? U : never;

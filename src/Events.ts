@@ -1,16 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Identifiable } from './Identifiable';
-
 export type BaseEvent<P = any, T extends string = string> = {
   type: T;
   payload: P;
 };
 
 export type AnyEvent = BaseEvent<any, string>;
-
-export type IdentifiableEvent<P = any, T extends string = string> = BaseEvent<P, T> & Identifiable;
-export type AnyIdentifiableEvent = IdentifiableEvent<any, string>;
-export type PickIdentifiableEvent<Event extends AnyEvent> = Event extends AnyIdentifiableEvent ? Event : never;
 
 export type EventListener<Event extends AnyEvent, E extends Event['type']> = (e: Event & { type: E }) => void;
 export type AnyEventListener = EventListener<AnyEvent, string>;
