@@ -8,19 +8,21 @@ export type IdentifiableResponse = {
   requestId: Id;
 };
 
-export type EventResponse<P = any, T extends string = string> = IdentifiableEvent<P, T> & IdentifiableResponse;
-export type AnyEventResponse = EventResponse<any, string>;
+export type ResponseEvent<P = any, T extends string = string> = IdentifiableEvent<P, T> & IdentifiableResponse;
+export type AnyResponseEvent = ResponseEvent<any, string>;
 
-export type CastToResponseEvent<E extends AnyEvent> = E extends BaseEvent<infer P, infer T>
-  ? EventResponse<P, T>
-  : never;
+export type CastToResponseEvent<E extends AnyEvent> = ResponseEvent<E['payload'], E['type']>;
+
+export type UnwrapResponseEvent<E extends ResponseEvent> = E extends ResponseEvent<infer P, infer T>
+  ? BaseEvent<P, T>
+  : E;
 
 export type InferResponseEventMap<RequestEvent extends BaseEvent, Map extends Record<RequestEvent['type'], any>> = {
-  [Key in keyof Map as `${Key & string}::response`]: EventResponse<Map[Key], `${Key & string}::response`>;
+  [Key in keyof Map as `${Key & string}::response`]: ResponseEvent<Map[Key], `${Key & string}::response`>;
 };
 
 export type AnyResponseEventMap = {
-  [key: string]: AnyEventResponse;
+  [key: string]: AnyResponseEvent;
 };
 
 export type RequestTypeFromResponseType<T> = T extends `${infer U}::response` ? U : never;
@@ -30,7 +32,7 @@ export function getEventResponseType<E extends AnyEvent>(event: E) {
   return `${event.type}::response`;
 }
 
-export function makeResponseEvent<RequestEvent extends AnyIdentifiableEvent, P = unknown>(
+export function makeResponseEvent<RequestEvent extends AnyIdentifiableEvent, P = any>(
   requestEvent: RequestEvent,
   id: Id,
   payload: P
@@ -40,5 +42,5 @@ export function makeResponseEvent<RequestEvent extends AnyIdentifiableEvent, P =
     id,
     requestId: requestEvent.id,
     payload,
-  } as EventResponse<P, `${RequestEvent['type']}::response`>;
+  } as ResponseEvent<P, `${RequestEvent['type']}::response`>;
 }

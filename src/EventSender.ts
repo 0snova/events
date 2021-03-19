@@ -1,21 +1,18 @@
 import { Id } from './lib/Identifiable';
-import { CastToIdentifiableEvent, makeIdentifiableEvent } from './EventIdentifiable';
 import { AnyEvent } from './Events';
-import { AsyncRequestSender, AsyncResponseSender } from './EventSender.h';
+import { AsyncRequestSender, AsyncResponseSender, AsyncSender } from './EventSender.h';
 import { ClosedConnector } from './ClosedConnector';
-import { EventResponse } from './EventResponse';
+import { ResponseEvent } from './EventResponse';
+import { CastToRequestEvent, makeRequestEvent, RequestEvent, UnwrapRequestEvent } from './EventRequest';
 
-export type SendRequest<Event extends AnyEvent> = (
-  target: ClosedConnector<CastToIdentifiableEvent<Event>>,
-  event: CastToIdentifiableEvent<Event>
-) => void;
-
-export type SendResponse<Event extends EventResponse> = (target: ClosedConnector<Event>, event: Event) => void;
+export type SendRequest<Event extends RequestEvent> = (target: ClosedConnector<Event>, event: Event) => void;
+export type SendResponse<Event extends ResponseEvent> = (target: ClosedConnector<Event>, event: Event) => void;
+export type SendEvent<Event extends AnyEvent> = (target: ClosedConnector<Event>, event: Event) => void;
 
 export function sendLocallyASAP<Event extends AnyEvent>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   target: ClosedConnector<any>,
-  event: CastToIdentifiableEvent<Event>
+  event: Event
 ) {
   setTimeout(() => {
     target.accept(event);
@@ -25,26 +22,26 @@ export function sendLocallyASAP<Event extends AnyEvent>(
 /*
   Make Identifiable Event from Event and send it to the target.
 */
-export class EventRequestSender<Event extends AnyEvent> implements AsyncRequestSender<Event> {
+export class EventRequestSender<Event extends RequestEvent> implements AsyncRequestSender<Event> {
   private lastEventId = 0;
 
   constructor(
-    protected target: ClosedConnector<CastToIdentifiableEvent<Event>>,
+    protected target: ClosedConnector<Event>,
     protected sender: SendRequest<Event> = sendLocallyASAP,
     protected generateId: () => Id = () => String(this.lastEventId++)
   ) {}
 
-  async send<E extends Event>(event: E) {
+  async send<E extends UnwrapRequestEvent<Event>>(event: E) {
     const id = this.generateId();
-    const eventWithId = makeIdentifiableEvent(event, id);
+    const requestEvent = makeRequestEvent(event, id) as Event;
 
-    this.sender(this.target, eventWithId);
+    this.sender(this.target, requestEvent);
 
-    return eventWithId;
+    return requestEvent;
   }
 }
 
-export class EventResponseSender<Event extends EventResponse> implements AsyncResponseSender<Event> {
+export class EventResponseSender<Event extends ResponseEvent> implements AsyncResponseSender<Event> {
   private lastEventId = 0;
 
   constructor(

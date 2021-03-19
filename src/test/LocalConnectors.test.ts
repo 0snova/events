@@ -1,23 +1,23 @@
 import { ClosedConnector } from '../ClosedConnector';
 import { InferEventFromCreatorsMap } from '../EventMap';
 import { makeEventCreator } from '../Events';
-import { CastToIdentifiableEvent } from '../EventIdentifiable';
 import { RequestConnector } from '../RequestConnector';
 import { ResponseConnector } from '../ResponseConnector';
 import { EventResponseSender, EventRequestSender } from '../EventSender';
 import { propagateEvents } from '../PropagateEvent';
 import { InferResponseEventMap } from '../EventResponse';
+import { CastToRequestEvent } from '../EventRequest';
 
 test(`Requests are propagated to the ResponseConnector`, async () => {
   const eventKEK = makeEventCreator<string, 'KEK'>('KEK');
   const eventLUL = makeEventCreator<number, 'LUL'>('LUL');
   const events = { eventKEK, eventLUL };
 
-  type RequestEvent = InferEventFromCreatorsMap<typeof events>;
-  type IdentifiableRequestEvent = CastToIdentifiableEvent<RequestEvent>;
+  type BaseEvents = InferEventFromCreatorsMap<typeof events>;
+  type RequestEvents = CastToRequestEvent<BaseEvents>;
 
   type ResponseEventMap = InferResponseEventMap<
-    RequestEvent,
+    BaseEvents,
     {
       KEK: string;
       LUL: number;
@@ -26,12 +26,10 @@ test(`Requests are propagated to the ResponseConnector`, async () => {
 
   type ResponseEvent = ResponseEventMap[keyof ResponseEventMap];
 
-  const requests = new ClosedConnector<IdentifiableRequestEvent>();
-  const requester = new RequestConnector<RequestEvent, ResponseEventMap>(
-    new EventRequestSender<RequestEvent>(requests)
-  );
+  const requests = new ClosedConnector<RequestEvents>();
+  const requester = new RequestConnector<RequestEvents, ResponseEventMap>(new EventRequestSender(requests));
 
-  const responser = new ResponseConnector<IdentifiableRequestEvent, ResponseEventMap>(
+  const responser = new ResponseConnector<RequestEvents, ResponseEventMap>(
     new EventResponseSender<ResponseEvent>(requester),
     {
       LUL: async (e) => {
