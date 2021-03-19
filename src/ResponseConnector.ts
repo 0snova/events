@@ -14,7 +14,7 @@ type ResponseCreator<
   ResponseEventMap extends AnyResponseEventMap
 > = (e: RequestEvent & { type: EType }) => Promise<ResponseEventMap[ResponseTypeFromRequestType<EType>]['payload']>;
 
-type ResponseMap<RequestEvent extends IdentifiableEvent, ResponseEventMap extends AnyResponseEventMap> = {
+export type ResponseMap<RequestEvent extends IdentifiableEvent, ResponseEventMap extends AnyResponseEventMap> = {
   [Key in keyof ResponseEventMap as RequestTypeFromResponseType<Key>]: ResponseCreator<
     RequestEvent,
     RequestTypeFromResponseType<Key>,

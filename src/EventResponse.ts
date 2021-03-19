@@ -28,6 +28,10 @@ export type AnyResponseEventMap = {
 export type RequestTypeFromResponseType<T> = T extends `${infer U}::response` ? U : never;
 export type ResponseTypeFromRequestType<T extends string> = `${T}::response`;
 
+export function isResponseEvent<E extends AnyEvent>(e: E) {
+  return e.type.endsWith(`::response`);
+}
+
 export function getEventResponseType<E extends AnyEvent>(event: E) {
   return `${event.type}::response`;
 }

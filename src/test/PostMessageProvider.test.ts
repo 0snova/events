@@ -29,7 +29,6 @@ test('should use PostMessageProvider to send events', async () => {
   const requester = new RequestConnector<RequestEvents, ResponseEventMap>(
     new PostMessageTransferer<RequestEvents>({
       postMessage(msg: any) {
-        console.log('req', msg);
         port2.postMessage(msg);
       },
     })
@@ -38,7 +37,6 @@ test('should use PostMessageProvider to send events', async () => {
   const responser = new ResponseConnector<RequestEvents, ResponseEventMap>(
     new PostMessageTransferer<ResponseEventMap[keyof ResponseEventMap]>({
       postMessage(msg: any) {
-        console.log('resp', msg);
         port1.postMessage(msg);
       },
     }),

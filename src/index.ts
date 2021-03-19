@@ -22,7 +22,7 @@ export { ClosedConnector } from './ClosedConnector';
 
 export type { RequestConnectorOptions } from './RequestConnector';
 export { RequestConnector } from './RequestConnector';
-
 export { ResponseConnector } from './ResponseConnector';
+export { DuplexConnector } from './DuplexConnector';
 
 export { propagateEvents } from './PropagateEvent';
