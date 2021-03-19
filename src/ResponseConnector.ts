@@ -1,10 +1,12 @@
 import { ClosedConnector } from './ClosedConnector';
 import { IdentifiableEvent } from './EventIdentifiable';
-import { AnyResponseEventMap, makeResponseEvent } from './EventResponse';
+import {
+  AnyResponseEventMap,
+  makeResponseEvent,
+  RequestTypeFromResponseType,
+  ResponseTypeFromRequestType,
+} from './EventResponse';
 import { AsyncResponseSender } from './EventSender.h';
-
-type RequestTypeFromResponseType<T> = T extends `${infer U}::response` ? U : never;
-type ResponseTypeFromRequestType<T extends string> = `${T}::response`;
 
 type ResponseCreator<
   RequestEvent extends IdentifiableEvent,

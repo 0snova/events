@@ -5,15 +5,21 @@ import { UnsubscribeMap } from './lib/UnsubscribeMap';
 import { ClosedConnector } from './ClosedConnector';
 import { BaseEvent } from './Events';
 import { AsyncRequestSender } from './EventSender.h';
-import { AnyEventResponse, AnyResponseEventMap, EventResponse, getEventResponseType } from './EventResponse';
+import {
+  AnyEventResponse,
+  AnyResponseEventMap,
+  EventResponse,
+  getEventResponseType,
+  ResponseTypeFromRequestType,
+} from './EventResponse';
 
 type GetResponseId<E extends EventResponse> = (e: E) => Id;
-type GetResponseResult<E extends EventResponse, Result = unknown> = (e: E) => Result;
+type GetResponseResult<E extends EventResponse> = (e: E) => E['payload'];
 type GetResponseTypeForRequest<E extends BaseEvent> = (e: E) => string;
 
 export type RequestConnectorOptions<RequestEvent extends BaseEvent, ResponseEvent extends AnyEventResponse> = {
   responseId?: GetResponseId<ResponseEvent>;
-  responseResult?: GetResponseResult<ResponseEvent, Response>;
+  responseResult?: GetResponseResult<ResponseEvent>;
   responseTypeForRequestEvent?: GetResponseTypeForRequest<RequestEvent>;
 };
 
@@ -25,7 +31,7 @@ export class RequestConnector<
 
   protected responseId: GetResponseId<ResponseEventMap[keyof ResponseEventMap]>;
   protected responseType: GetResponseTypeForRequest<RequestEvent> = getEventResponseType;
-  protected responseResult: GetResponseResult<ResponseEventMap[keyof ResponseEventMap], Response>;
+  protected responseResult: GetResponseResult<ResponseEventMap[keyof ResponseEventMap]>;
 
   constructor(
     private sender: AsyncRequestSender<RequestEvent>,
@@ -39,7 +45,9 @@ export class RequestConnector<
     this.responseResult = responseResult;
   }
 
-  public async request<E extends RequestEvent>(event: E): Promise<Response> {
+  public async request<E extends RequestEvent>(
+    event: E
+  ): Promise<ResponseEventMap[ResponseTypeFromRequestType<E['type']>]['payload']> {
     const { id: eventId } = await this.sender.send(event);
     const responseType = this.responseType(event);
 
