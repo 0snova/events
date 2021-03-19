@@ -14,9 +14,8 @@ export { makeResponseEvent } from './EventResponse';
 
 export type { InferEventFromCreatorsMap } from './EventMap';
 
-export type { EventSender, AsyncRequestSender, AsyncResponseSender } from './EventSender.h';
-export type { SendRequest, SendResponse } from './EventSender';
-export { sendLocallyASAP, EventRequestSender, EventResponseSender } from './EventSender';
+export type { EventSender } from './EventSender.h';
+export { LocalNextTickTransferer, PostMessageTransferer } from './EventSender';
 
 export type { BaseConnector } from './Connector.h';
 export { ClosedConnector } from './ClosedConnector';

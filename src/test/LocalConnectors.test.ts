@@ -3,7 +3,7 @@ import { InferEventFromCreatorsMap } from '../EventMap';
 import { makeEventCreator } from '../Events';
 import { RequestConnector } from '../RequestConnector';
 import { ResponseConnector } from '../ResponseConnector';
-import { EventResponseSender, EventRequestSender } from '../EventSender';
+import { LocalNextTickTransferer } from '../EventSender';
 import { propagateEvents } from '../PropagateEvent';
 import { InferResponseEventMap } from '../EventResponse';
 import { CastToRequestEvent } from '../EventRequest';
@@ -27,10 +27,10 @@ test(`Requests are propagated to the ResponseConnector`, async () => {
   type ResponseEvent = ResponseEventMap[keyof ResponseEventMap];
 
   const requests = new ClosedConnector<RequestEvents>();
-  const requester = new RequestConnector<RequestEvents, ResponseEventMap>(new EventRequestSender(requests));
+  const requester = new RequestConnector<RequestEvents, ResponseEventMap>(new LocalNextTickTransferer(requests));
 
   const responser = new ResponseConnector<RequestEvents, ResponseEventMap>(
-    new EventResponseSender<ResponseEvent>(requester),
+    new LocalNextTickTransferer<ResponseEvent>(requester),
     {
       LUL: async (e) => {
         return e.payload + 69;
