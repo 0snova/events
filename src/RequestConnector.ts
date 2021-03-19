@@ -3,56 +3,22 @@
 import { Id } from './lib/Identifiable';
 import { UnsubscribeMap } from './lib/UnsubscribeMap';
 import { ClosedConnector } from './ClosedConnector';
-import { AnyEvent, BaseEvent } from './Events';
-import { AsyncEventSenderWithId } from './EventSender.h';
-import { AnyIdentifiableEvent } from './EventIdentifiable';
+import { BaseEvent } from './Events';
+import { AsyncRequestSender } from './EventSender.h';
+import { AnyEventResponse, AnyResponseEventMap, EventResponse, getEventResponseType } from './EventResponse';
 
-export type IdentifiableResponse = {
-  requestId: Id;
-};
+type GetResponseId<E extends EventResponse> = (e: E) => Id;
+type GetResponseResult<E extends EventResponse, Result = unknown> = (e: E) => Result;
+type GetResponseTypeForRequest<E extends BaseEvent> = (e: E) => string;
 
-export type EventResponse<P = unknown, T extends string = string> = BaseEvent<P, T> & IdentifiableResponse;
-export type AnyEventResponse = EventResponse<any, string>;
-
-type GetResponseId<E extends AnyEventResponse> = (e: E) => Id;
-type GetResponseResult<E extends AnyEventResponse, Result = unknown> = (e: E) => Result;
-type GetResponseTypeForRequest<E extends AnyEvent> = (e: E) => string;
-
-type AnyResponseEventMap = {
-  [key: string]: AnyEventResponse;
-};
-
-function getEventResponseType<E extends AnyEvent>(event: E) {
-  return `${event.type}::response`;
-}
-
-export function makeResponseEvent<
-  RequestEvent extends AnyIdentifiableEvent,
-  P = unknown,
-  T extends string = RequestEvent['type']
->(requestEvent: RequestEvent, payload: P) {
-  return {
-    type: getEventResponseType(requestEvent),
-    requestId: requestEvent.id,
-    payload,
-  } as EventResponse<P, `${T}::response`>;
-}
-
-export type InferResponseEventMap<RequestEvent extends AnyEvent, Map extends Record<RequestEvent['type'], any>> = {
-  [Key in keyof Map as `${Key extends string ? Key : never}::response`]: EventResponse<
-    Map[Key],
-    `${Key extends string ? Key : never}::response`
-  >;
-};
-
-export type RequestConnectorOptions<RequestEvent extends AnyEvent, ResponseEvent extends AnyEventResponse> = {
+export type RequestConnectorOptions<RequestEvent extends BaseEvent, ResponseEvent extends AnyEventResponse> = {
   responseId?: GetResponseId<ResponseEvent>;
   responseResult?: GetResponseResult<ResponseEvent, Response>;
   responseTypeForRequestEvent?: GetResponseTypeForRequest<RequestEvent>;
 };
 
 export class RequestConnector<
-  RequestEvent extends AnyEvent,
+  RequestEvent extends BaseEvent,
   ResponseEventMap extends AnyResponseEventMap
 > extends ClosedConnector<ResponseEventMap[keyof ResponseEventMap]> {
   private responseListeners = new UnsubscribeMap<ResponseEventMap[keyof ResponseEventMap]['type']>();
@@ -62,7 +28,7 @@ export class RequestConnector<
   protected responseResult: GetResponseResult<ResponseEventMap[keyof ResponseEventMap], Response>;
 
   constructor(
-    private sender: AsyncEventSenderWithId<RequestEvent>,
+    private sender: AsyncRequestSender<RequestEvent>,
     {
       responseId = (e) => e.requestId,
       responseResult = (e) => e.payload,

@@ -10,6 +10,10 @@ export type CastToIdentifiableEvent<E extends AnyEvent> = E extends BaseEvent<in
   ? IdentifiableEvent<P, T>
   : never;
 
+export type CastToIdentifiableEventMap<M extends Record<string, AnyEvent>> = {
+  [Key in keyof M]: CastToIdentifiableEvent<M[Key]>;
+};
+
 export function makeIdentifiableEvent<E extends AnyEvent>(baseEvent: E, id: Id) {
   return ({ ...baseEvent, id } as unknown) as CastToIdentifiableEvent<E>;
 }

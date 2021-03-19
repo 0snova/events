@@ -9,14 +9,21 @@ export type {
 } from './EventIdentifiable';
 export { makeIdentifiableEvent } from './EventIdentifiable';
 
+export type { InferResponseEventMap } from './EventResponse';
+export { makeResponseEvent } from './EventResponse';
+
 export type { InferEventFromCreatorsMap } from './EventMap';
 
-export type { EventSender as IEventSender, AsyncEventSenderWithId as IAsyncEventSenderWithId } from './EventSender.h';
-export type { Send } from './EventSender';
-export { sendLocallyASAP, EventSender } from './EventSender';
+export type { EventSender, AsyncRequestSender, AsyncResponseSender } from './EventSender.h';
+export type { SendRequest, SendResponse } from './EventSender';
+export { sendLocallyASAP, EventRequestSender, EventResponseSender } from './EventSender';
 
 export type { BaseConnector } from './Connector.h';
 export { ClosedConnector } from './ClosedConnector';
 
-export type { RequestConnectorOptions, InferResponseEventMap } from './RequestConnector';
-export { makeResponseEvent, RequestConnector } from './RequestConnector';
+export type { RequestConnectorOptions } from './RequestConnector';
+export { RequestConnector } from './RequestConnector';
+
+export { ResponseConnector } from './ResponseConnector';
+
+export { propagateEvents } from './PropagateEvent';
