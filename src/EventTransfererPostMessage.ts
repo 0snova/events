@@ -1,8 +1,16 @@
 import { AnyEvent } from './Events';
 import { EnhanceEvent, eventIdentity, EventTransfererAsync } from './EventTransferer';
 
-export interface PostMessageProvider<T = any> {
-  postMessage(message: T): void;
+export type PostMessageMessageWrapper<T = any> = {
+  data: T;
+};
+
+export interface PostMessageProvider<Event extends AnyEvent = AnyEvent> {
+  postMessage(message: Event): void;
+}
+
+export interface MessageListenerProvider<T extends AnyEvent = AnyEvent> {
+  addEventListener(type: 'message', listener: (innerMessage: PostMessageMessageWrapper<T>) => void): void;
 }
 
 export class PostMessageTransferer<Event extends AnyEvent, FinalEvent extends Event = Event>

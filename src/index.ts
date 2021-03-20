@@ -18,7 +18,13 @@ export type { InferEventFromCreatorsMap } from './EventMap';
 export type { EnhanceEvent, EventTransferer, EventTransfererAsync } from './EventTransferer';
 export { eventIdentity } from './EventTransferer';
 export { LocalNextTickTransferer } from './EventTransfererLocalNextTick';
+export type {
+  MessageListenerProvider,
+  PostMessageProvider,
+  PostMessageMessageWrapper,
+} from './EventTransfererPostMessage';
 export { PostMessageTransferer } from './EventTransfererPostMessage';
+export { createPostMessageChannel } from './ChannelPostMessage';
 
 /* Connectors core */
 export type { BaseConnector } from './Connector.h';

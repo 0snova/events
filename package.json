@@ -1,6 +1,6 @@
 {
   "name": "@osnova/events",
-  "version": "0.11.0",
+  "version": "0.12.2",
   "description": "Intersystem communication via Events",
   "author": "Alexander Snov",
   "license": "MIT",
