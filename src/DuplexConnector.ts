@@ -2,7 +2,6 @@ import { ClosedConnector } from './ClosedConnector';
 import { RequestEvent } from './EventRequest';
 import { AnyResponseEventMap, isResponseEvent } from './EventResponse';
 import { EventTransfererAsync } from './EventTransferer';
-import { propagateEvents } from './PropagateEvent';
 import { RequestConnector } from './RequestConnector';
 import { ResponseConnector, ResponseMap } from './ResponseConnector';
 
@@ -27,17 +26,6 @@ export class DuplexConnector<
 
     this.requester = new RequestConnector<OutReqEvents, InResponseEventMap>(transfererRequests);
     this.responser = new ResponseConnector<InReqEvents, OutResponseEventMap>(transfererResponses, responses);
-  }
-
-  public acceptRequestsFrom<Event extends InReqEvents>(source: ClosedConnector<any>, events: Event['type'][]) {
-    propagateEvents(source, this.responser as any, events);
-  }
-
-  public acceptResposesFrom<Event extends InResponseEventMap[keyof InResponseEventMap]>(
-    source: ClosedConnector<any>,
-    events: Event['type'][]
-  ) {
-    propagateEvents(source, this.requester as any, events);
   }
 
   public accept<E extends InReqEvents | InResponseEventMap[keyof InResponseEventMap]>(event: E) {
