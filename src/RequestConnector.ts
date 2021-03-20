@@ -4,7 +4,6 @@ import { GenerateId, Id } from './lib/Identifiable';
 import { UnsubscribeMap } from './lib/UnsubscribeMap';
 import { ClosedConnector } from './ClosedConnector';
 import { BaseEvent } from './Events';
-import { AsyncTransferer } from './EventSender.h';
 import {
   AnyResponseEvent,
   AnyResponseEventMap,
@@ -13,6 +12,7 @@ import {
   ResponseTypeFromRequestType,
 } from './EventResponse';
 import { makeRequestEvent, RequestEvent, UnwrapRequestEvent } from './EventRequest';
+import { EventTransfererAsync } from './EventTransferer';
 
 type GetResponseId<E extends ResponseEvent> = (e: E) => Id;
 type GetResponseResult<E extends ResponseEvent> = (e: E) => E['payload'];
@@ -38,7 +38,7 @@ export class RequestConnector<
   protected generateId?: GenerateId;
 
   constructor(
-    private transferer: AsyncTransferer<ReqEvent>,
+    private transferer: EventTransfererAsync<ReqEvent>,
     {
       responseId = (e) => e.requestId,
       responseResult = (e) => e.payload,
@@ -55,7 +55,7 @@ export class RequestConnector<
     event: E
   ): Promise<ResponseEventMap[ResponseTypeFromRequestType<E['type']>]['payload']> {
     const id = this.generateId?.() ?? undefined;
-    const { id: eventId } = await this.transferer.send(id ? makeRequestEvent(event, id) : (event as any));
+    const { id: eventId } = await this.transferer.transfer(id ? makeRequestEvent(event, id) : (event as any));
 
     if (!eventId) {
       throw new Error(

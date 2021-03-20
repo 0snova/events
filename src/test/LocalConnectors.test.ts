@@ -3,7 +3,7 @@ import { InferEventFromCreatorsMap } from '../EventMap';
 import { makeEventCreator } from '../Events';
 import { RequestConnector } from '../RequestConnector';
 import { ResponseConnector } from '../ResponseConnector';
-import { LocalNextTickTransferer } from '../EventSender';
+import { LocalNextTickTransferer } from '../EventTransfererLocalNextTick';
 import { propagateEvents } from '../PropagateEvent';
 import { InferResponseEventMap } from '../EventResponse';
 import { CastToRequestEvent } from '../EventRequest';

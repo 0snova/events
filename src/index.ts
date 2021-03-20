@@ -14,15 +14,21 @@ export { makeResponseEvent } from './EventResponse';
 
 export type { InferEventFromCreatorsMap } from './EventMap';
 
-export type { EventSender } from './EventSender.h';
-export { LocalNextTickTransferer, PostMessageTransferer } from './EventSender';
+/* Event transfering */
+export type { EnhanceEvent, EventTransferer, EventTransfererAsync } from './EventTransferer';
+export { eventIdentity } from './EventTransferer';
+export { LocalNextTickTransferer } from './EventTransfererLocalNextTick';
+export { PostMessageTransferer } from './EventTransfererPostMessage';
 
+/* Connectors core */
 export type { BaseConnector } from './Connector.h';
 export { ClosedConnector } from './ClosedConnector';
 
+/* Specific connectors */
 export type { RequestConnectorOptions } from './RequestConnector';
 export { RequestConnector } from './RequestConnector';
 export { ResponseConnector } from './ResponseConnector';
 export { DuplexConnector } from './DuplexConnector';
 
+/* Utiulities */
 export { propagateEvents } from './PropagateEvent';

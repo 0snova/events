@@ -6,7 +6,7 @@ import {
   RequestTypeFromResponseType,
   ResponseTypeFromRequestType,
 } from './EventResponse';
-import { AsyncTransferer } from './EventSender.h';
+import { EventTransfererAsync } from './EventTransferer';
 
 type ResponseCreator<
   RequestEvent extends IdentifiableEvent,
@@ -29,7 +29,7 @@ export class ResponseConnector<
   private responseHandlers: Partial<Record<RequestEvent['type'], any>> = {};
 
   constructor(
-    private transferer: AsyncTransferer<ResponseEventMap[keyof ResponseEventMap]>,
+    private transferer: EventTransfererAsync<ResponseEventMap[keyof ResponseEventMap]>,
     responses: ResponseMap<RequestEvent, ResponseEventMap>
   ) {
     super();
@@ -51,7 +51,7 @@ export class ResponseConnector<
     this.on(requestEventType, async (requestEvent) => {
       const response = makeResponseEvent(requestEvent, 'TODO:id', await responseCreator(requestEvent));
       // TODO: fix any
-      this.transferer.send(response as any);
+      this.transferer.transfer(response as any);
     });
   }
 }

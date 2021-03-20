@@ -1,7 +1,7 @@
 import { ClosedConnector } from './ClosedConnector';
 import { RequestEvent } from './EventRequest';
 import { AnyResponseEventMap, isResponseEvent } from './EventResponse';
-import { AsyncTransferer } from './EventSender.h';
+import { EventTransfererAsync } from './EventTransferer';
 import { propagateEvents } from './PropagateEvent';
 import { RequestConnector } from './RequestConnector';
 import { ResponseConnector, ResponseMap } from './ResponseConnector';
@@ -19,8 +19,8 @@ export class DuplexConnector<
   responser: ResponseConnector<InReqEvents, OutResponseEventMap>;
 
   constructor(
-    private transfererRequests: AsyncTransferer<OutReqEvents>,
-    private transfererResponses: AsyncTransferer<OutResponseEventMap[keyof OutResponseEventMap]>,
+    private transfererRequests: EventTransfererAsync<OutReqEvents>,
+    private transfererResponses: EventTransfererAsync<OutResponseEventMap[keyof OutResponseEventMap]>,
     responses: ResponseMap<RequestEvent, OutResponseEventMap>
   ) {
     super();

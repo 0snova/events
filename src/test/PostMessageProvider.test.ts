@@ -4,7 +4,7 @@ import { InferEventFromCreatorsMap } from '../EventMap';
 import { CastToRequestEvent } from '../EventRequest';
 import { InferResponseEventMap } from '../EventResponse';
 import { makeEventCreator } from '../Events';
-import { PostMessageTransferer } from '../EventSender';
+import { PostMessageTransferer } from '../EventTransfererPostMessage';
 import { RequestConnector } from '../RequestConnector';
 import { ResponseConnector } from '../ResponseConnector';
 
@@ -28,7 +28,7 @@ test('should use PostMessageProvider to send events', async () => {
 
   const requester = new RequestConnector<RequestEvents, ResponseEventMap>(
     new PostMessageTransferer<RequestEvents>({
-      postMessage(msg: any) {
+      postMessage(msg) {
         port2.postMessage(msg);
       },
     })
@@ -36,7 +36,7 @@ test('should use PostMessageProvider to send events', async () => {
 
   const responser = new ResponseConnector<RequestEvents, ResponseEventMap>(
     new PostMessageTransferer<ResponseEventMap[keyof ResponseEventMap]>({
-      postMessage(msg: any) {
+      postMessage(msg) {
         port1.postMessage(msg);
       },
     }),
