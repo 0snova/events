@@ -1,5 +1,5 @@
-const { copyFiles } = require('./copy-files-to-dist');
-const { makePackageJSON, savePackageJSON } = require('./make-dist-package-json');
+const { copyFiles } = require('@osnova/build-library');
+const { makePackageJSON, savePackageJSON } = require('@osnova/build-library');
 
 copyFiles(['README.md']).catch((e) => {
   console.error(e);
