@@ -1106,6 +1106,11 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
+"@osnova/build-cli@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/@osnova/build-cli/-/build-cli-0.2.0.tgz#8222d7ac8f2fecec456a0e4aa8acbf0611a03efd"
+  integrity sha512-2sJJp32FI0hlfbyTbnfJBCxMqDXw034aP2BpULPCt4SVj4RTUw4bYwi5T5uMNWEZXSZneg7E0NT7NolMnMgCyw==
+
 "@osnova/build-library@^0.1.0":
   version "0.1.0"
   resolved "https://registry.npmjs.org/@osnova/build-library/-/build-library-0.1.0.tgz#84b78fe21b4f2f66c83f879787f46c12e7208c2f"
