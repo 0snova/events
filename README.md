@@ -84,3 +84,12 @@ Transfers event to `ClosedConnector` on the next tick.
 #### PostMessage Transferer
 
 Transfers events via custom provider with `postMessage` interface.
+
+
+### InterConnectorOperators
+
+InterConnectorOperators links two connectors.
+
+### propagateEvents
+
+Propagates recieved listed events from one connector to another.
