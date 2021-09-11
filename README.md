@@ -72,3 +72,11 @@ All listeners will be executed synchronously when the connector receives the eve
 
 Request is an event that expects a response from the target connector.
 Response is an event that is sent to the requesting connector.
+
+### EventTransferer
+
+Takes original event, prepares it and transfers it to receiving system.
+
+#### LocalNextTickTransferer
+
+Transfers event to `ClosedConnector` on the next tick.
