@@ -35,6 +35,7 @@ export type { RequestConnectorOptions } from './RequestConnector';
 export { RequestConnector } from './RequestConnector';
 export { ResponseConnector } from './ResponseConnector';
 export { DuplexConnector } from './DuplexConnector';
+export type { DuplexConnectorOptions } from './DuplexConnector';
 
 /* Utiulities */
 export { propagateEvents } from './PropagateEvent';

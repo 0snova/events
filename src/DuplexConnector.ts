@@ -1,9 +1,14 @@
+import { RequestConnectorOptions } from '.';
 import { ClosedConnector } from './ClosedConnector';
-import { RequestEvent } from './EventRequest';
-import { AnyResponseEventMap, isResponseEvent } from './EventResponse';
+import { RequestEvent, UnwrapRequestEvent } from './EventRequest';
+import { AnyResponseEventMap, isResponseEvent, ResponseEvent } from './EventResponse';
 import { EventTransfererAsync } from './EventTransferer';
 import { RequestConnector } from './RequestConnector';
-import { ResponseConnector, ResponseMap } from './ResponseConnector';
+import { ResponseConnector, ResponseCreator, ResponseMap } from './ResponseConnector';
+
+export type DuplexConnectorOptions<OutEvents extends ResponseEvent> = {
+  requestParams?: RequestConnectorOptions<OutEvents>;
+};
 
 /*
   Send outcoming requests and responses to incoming requests
@@ -20,11 +25,14 @@ export class DuplexConnector<
   constructor(
     private transfererRequests: EventTransfererAsync<OutReqEvents>,
     private transfererResponses: EventTransfererAsync<OutResponseEventMap[keyof OutResponseEventMap]>,
-    responses: ResponseMap<RequestEvent, OutResponseEventMap>
+    responses: ResponseMap<RequestEvent, OutResponseEventMap>,
+    options?: DuplexConnectorOptions<InResponseEventMap[keyof InResponseEventMap]>
   ) {
     super();
 
-    this.requester = new RequestConnector<OutReqEvents, InResponseEventMap>(transfererRequests);
+    const { requestParams } = options ?? {};
+
+    this.requester = new RequestConnector<OutReqEvents, InResponseEventMap>(transfererRequests, requestParams);
     this.responser = new ResponseConnector<InReqEvents, OutResponseEventMap>(transfererResponses, responses);
   }
 
@@ -40,5 +48,16 @@ export class DuplexConnector<
     }
 
     super.accept(event);
+  }
+
+  public request(event: UnwrapRequestEvent<OutReqEvents>) {
+    return this.requester.request(event);
+  }
+
+  public response<EType extends OutReqEvents['type']>(
+    eventType: EType,
+    responseCreator: ResponseCreator<RequestEvent, EType, OutResponseEventMap>
+  ) {
+    return this.responser.registerResponse(eventType, responseCreator);
   }
 }

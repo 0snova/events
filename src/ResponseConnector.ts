@@ -8,7 +8,7 @@ import {
 } from './EventResponse';
 import { EventTransfererAsync } from './EventTransferer';
 
-type ResponseCreator<
+export type ResponseCreator<
   RequestEvent extends IdentifiableEvent,
   EType extends RequestEvent['type'],
   ResponseEventMap extends AnyResponseEventMap
@@ -26,6 +26,7 @@ export class ResponseConnector<
   RequestEvent extends IdentifiableEvent,
   ResponseEventMap extends AnyResponseEventMap
 > extends ClosedConnector<RequestEvent> {
+  private lastEventId = 0;
   private responseHandlers: Partial<Record<RequestEvent['type'], any>> = {};
 
   constructor(
@@ -49,7 +50,11 @@ export class ResponseConnector<
     }
 
     this.on(requestEventType, async (requestEvent) => {
-      const response = makeResponseEvent(requestEvent, 'TODO:id', await responseCreator(requestEvent));
+      const response = makeResponseEvent(
+        requestEvent,
+        String(`${requestEvent.id}-${this.lastEventId++}`),
+        await responseCreator(requestEvent)
+      );
       // TODO: fix any
       this.transferer.transfer(response as any);
     });
