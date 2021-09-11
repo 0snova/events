@@ -39,3 +39,9 @@ export type { DuplexConnectorOptions } from './DuplexConnector';
 
 /* Utiulities */
 export { propagateEvents } from './PropagateEvent';
+
+export {
+  makeWebWorkerConnector,
+  makeWebWorkerPostMessageProvider,
+  propagateWebWorkerEvents,
+} from './WebWorkerConnector';
