@@ -77,6 +77,10 @@ Response is an event that is sent to the requesting connector.
 
 Takes original event, prepares it and transfers it to receiving system.
 
-#### LocalNextTickTransferer
+#### LocalNextTick Transferer
 
 Transfers event to `ClosedConnector` on the next tick.
+
+#### PostMessage Transferer
+
+Transfers events via custom provider with `postMessage` interface.
