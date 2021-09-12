@@ -12,6 +12,9 @@ export { makeIdentifiableEvent } from './EventIdentifiable';
 export type { InferResponseEventMap } from './EventResponse';
 export { makeResponseEvent } from './EventResponse';
 
+export type { CastToRequestEvent, RequestEvent, UnwrapRequestEvent } from './EventRequest';
+export { makeRequestEvent } from './EventRequest';
+
 export type { InferEventFromCreatorsMap } from './EventMap';
 
 /* Event transfering */
