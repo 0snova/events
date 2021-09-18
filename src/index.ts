@@ -40,6 +40,8 @@ export { ResponseConnector } from './ResponseConnector';
 export { DuplexConnector } from './DuplexConnector';
 export type { DuplexConnectorOptions } from './DuplexConnector';
 
+export type { EventSystemParams } from './EventSystem';
+
 /* Utiulities */
 export { propagateEvents } from './PropagateEvent';
 
