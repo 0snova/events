@@ -15,6 +15,9 @@ export { makeResponseEvent } from './EventResponse';
 export type { CastToRequestEvent, RequestEvent, UnwrapRequestEvent } from './EventRequest';
 export { makeRequestEvent } from './EventRequest';
 
+export type { CastToDataEvent, DataEvent, UnwrapDataEvent } from './EventData';
+export { makeDataEvent } from './EventData';
+
 export type { InferEventFromCreatorsMap } from './EventMap';
 
 /* Event transfering */
