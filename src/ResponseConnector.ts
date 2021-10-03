@@ -4,6 +4,7 @@ import {
   AnyResponseEventMap,
   makeResponseEvent,
   RequestTypeFromResponseType,
+  ResponseEvent,
   ResponseTypeFromRequestType,
 } from './EventResponse';
 import { EventTransfererAsync } from './EventTransferer';
@@ -31,25 +32,35 @@ export class ResponseConnector<
 
   constructor(
     private transferer: EventTransfererAsync<ResponseEventMap[keyof ResponseEventMap]>,
-    responses: ResponseMap<RequestEvent, ResponseEventMap>
+    responses?: Partial<ResponseMap<RequestEvent, ResponseEventMap>>
   ) {
     super();
 
-    for (const [eventType, eventCreator] of Object.entries<any>(responses)) {
-      this.registerResponse(eventType, eventCreator);
-      this.responseHandlers[eventType as RequestEvent['type']] = eventCreator;
+    if (typeof responses === 'object') {
+      for (const [eventType, eventCreator] of Object.entries<any>(responses)) {
+        this.registerResponse(eventType, eventCreator);
+        this.responseHandlers[eventType as RequestEvent['type']] = eventCreator;
+      }
     }
   }
 
   public registerResponse<EType extends RequestEvent['type']>(
     requestEventType: EType,
-    responseCreator: ResponseCreator<RequestEvent, EType, ResponseEventMap>
+    responseCreator: ResponseCreator<RequestEvent, EType, ResponseEventMap>,
+    afterResponse?: (
+      response: ResponseEvent<
+        ResponseEventMap[`${EType}::response`]['payload'],
+        `${(RequestEvent & {
+          type: EType;
+        })['type']}::response`
+      >
+    ) => void
   ) {
     if (this.responseHandlers[requestEventType]) {
       throw new Error(`Unable to register response to event "${requestEventType}": response handler is already exist.`);
     }
 
-    this.on(requestEventType, async (requestEvent) => {
+    return this.on(requestEventType, async (requestEvent) => {
       const response = makeResponseEvent(
         requestEvent,
         String(`${requestEvent.id}-${this.lastEventId++}`),
@@ -57,6 +68,9 @@ export class ResponseConnector<
       );
       // TODO: fix any
       this.transferer.transfer(response as any);
+      if (afterResponse) {
+        afterResponse(response);
+      }
     });
   }
 }

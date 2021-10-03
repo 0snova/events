@@ -25,7 +25,7 @@ export class DuplexConnector<
   constructor(
     private transfererRequests: EventTransfererAsync<OutReqEvents>,
     private transfererResponses: EventTransfererAsync<OutResponseEventMap[keyof OutResponseEventMap]>,
-    responses: ResponseMap<RequestEvent, OutResponseEventMap>,
+    responses?: Partial<ResponseMap<RequestEvent, OutResponseEventMap>>,
     options?: DuplexConnectorOptions<InResponseEventMap[keyof InResponseEventMap]>
   ) {
     super();
@@ -56,8 +56,9 @@ export class DuplexConnector<
 
   public response<EType extends OutReqEvents['type']>(
     eventType: EType,
-    responseCreator: ResponseCreator<RequestEvent, EType, OutResponseEventMap>
+    responseCreator: ResponseCreator<RequestEvent, EType, OutResponseEventMap>,
+    afterResponse?: (response: ResponseEvent) => void
   ) {
-    return this.responser.registerResponse(eventType, responseCreator);
+    return this.responser.registerResponse(eventType, responseCreator, afterResponse);
   }
 }

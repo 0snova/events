@@ -26,7 +26,7 @@ export function makeWebWorkerConnector<
   InResponseEventMap extends AnyResponseEventMap
 >(
   worker: Worker,
-  responses: ResponseMap<RequestEvent, OutResponseEventMap>,
+  responses?: Partial<ResponseMap<RequestEvent, OutResponseEventMap>>,
   options?: DuplexConnectorOptions<InResponseEventMap[keyof InResponseEventMap]>
 ) {
   const connector = new DuplexConnector<OutReqEvents, InReqEvents, OutResponseEventMap, InResponseEventMap>(
