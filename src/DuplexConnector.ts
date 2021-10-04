@@ -54,9 +54,9 @@ export class DuplexConnector<
     return this.requester.request(event);
   }
 
-  public response<EType extends OutReqEvents['type']>(
+  public response<EType extends InReqEvents['type']>(
     eventType: EType,
-    responseCreator: ResponseCreator<RequestEvent, EType, OutResponseEventMap>,
+    responseCreator: ResponseCreator<InReqEvents, EType, OutResponseEventMap>,
     afterResponse?: (response: ResponseEvent) => void
   ) {
     return this.responser.registerResponse(eventType, responseCreator, afterResponse);
