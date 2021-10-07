@@ -39,7 +39,6 @@ export class ResponseConnector<
     if (typeof responses === 'object') {
       for (const [eventType, eventCreator] of Object.entries<any>(responses)) {
         this.registerResponse(eventType, eventCreator);
-        this.responseHandlers[eventType as RequestEvent['type']] = eventCreator;
       }
     }
   }
@@ -59,6 +58,8 @@ export class ResponseConnector<
     if (this.responseHandlers[requestEventType]) {
       throw new Error(`Unable to register response to event "${requestEventType}": response handler is already exist.`);
     }
+
+    this.responseHandlers[requestEventType] = responseCreator;
 
     return this.on(requestEventType, async (requestEvent) => {
       const response = makeResponseEvent(
