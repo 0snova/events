@@ -32,6 +32,30 @@ test('should accept listenable events', () => {
   `);
 });
 
+test('should listen wildcard event type', () => {
+  const c = new ClosedConnector<Events>();
+
+  const events: any[] = [];
+
+  c.on('*', (event) => {
+    events.push(event.payload);
+  });
+
+  c.accept(testEvent1({ message: 'test message' }));
+  c.accept(testEvent2({ value: 69 }));
+
+  expect(events).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "message": "test message",
+      },
+      Object {
+        "value": 69,
+      },
+    ]
+  `);
+});
+
 test('should release selected events', () => {
   const c = new ClosedConnector<Events>();
 

@@ -8,8 +8,10 @@ import { PostMessageTransferer } from '../EventTransfererPostMessage';
 
 test('should send request and recieve response', async () => {
   const conn1Event = makeEventCreator<number, 'event-1'>('event-1');
+  const conn1Event2 = makeEventCreator<string, 'event-12'>('event-12');
+
   const conn2Event = makeEventCreator<number, 'event-2'>('event-2');
-  const events1 = { conn1Event };
+  const events1 = { conn1Event, conn1Event2 };
   const events2 = { conn2Event };
 
   type Events1 = InferEventFromCreatorsMap<typeof events1>;
@@ -30,6 +32,7 @@ test('should send request and recieve response', async () => {
     Events1,
     {
       'event-1': number;
+      'event-12': string;
     }
   >;
   type ResponseEvent2 = ResponseEventMap2[keyof ResponseEventMap2];

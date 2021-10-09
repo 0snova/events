@@ -50,7 +50,7 @@ export class DuplexConnector<
     super.accept(event);
   }
 
-  public request(event: UnwrapRequestEvent<OutReqEvents>) {
+  public request<E extends UnwrapRequestEvent<OutReqEvents>>(event: E) {
     return this.requester.request(event);
   }
 

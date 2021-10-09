@@ -25,5 +25,5 @@ export function eventFactoryWrapper<T extends string>(type: T) {
 }
 
 export function makeEventCreator<P, T extends string = string>(type: T): EventCreator<P, T> {
-  return eventFactoryWrapper<T>(type)<P>();
+  return eventFactoryWrapper(type)<P>();
 }

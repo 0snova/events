@@ -13,12 +13,12 @@ export class ClosedConnector<Event extends AnyEvent> implements BaseConnector<Ev
     this.listeners = new ListenersMap();
   }
 
-  on<E extends Event['type']>(eventType: E, listener: EventListener<Event, E>): Unsubscribe {
+  on<E extends Event['type']>(eventType: E | '*', listener: EventListener<Event, E>): Unsubscribe {
     return this.listeners.add(eventType, listener);
   }
 
   accept<E extends Event>(event: E) {
-    const listeners = this.listeners.get(event.type);
+    const listeners = this.listeners.getExecuteList(event.type);
 
     if (listeners) {
       listeners.forEach((l) => l(event));
