@@ -9,7 +9,7 @@ import { AnyEvent } from './Events';
 export function propagateEvents<Events extends AnyEvent, E extends Events['type'] = Events['type']>(
   origin: BaseConnector<Events>,
   target: BaseConnector<Events>,
-  eventTypes: E[]
+  eventTypes: (E | '*')[]
 ): Unsubscribe {
   const unsubsribes: Unsubscribe[] = [];
   for (const eventType of eventTypes) {

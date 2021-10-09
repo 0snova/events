@@ -41,6 +41,40 @@ it('should propagate to the target only specified events', () => {
   `);
 });
 
+it('should propagate to the target wildcard events', () => {
+  const o = new ClosedConnector();
+  const t = new ClosedConnector();
+  propagateEvents(o, t, ['*']);
+
+  const propagatedEvents: AnyEvent[] = [];
+
+  t.on('PROPAGATE_EVENT', (event) => propagatedEvents.push(event));
+  t.on('DONT_PROPAGATE_EVENT', (event) => propagatedEvents.push(event));
+
+  o.accept({
+    type: 'PROPAGATE_EVENT',
+    payload: 'PROPAGATE_EVENT_PAYLOAD_1',
+  });
+
+  o.accept({
+    type: 'PROPAGATE_EVENT',
+    payload: 'PROPAGATE_EVENT_PAYLOAD_2',
+  });
+
+  expect(propagatedEvents).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "payload": "PROPAGATE_EVENT_PAYLOAD_1",
+        "type": "PROPAGATE_EVENT",
+      },
+      Object {
+        "payload": "PROPAGATE_EVENT_PAYLOAD_2",
+        "type": "PROPAGATE_EVENT",
+      },
+    ]
+  `);
+});
+
 it('should stop propagation when unsubscriber is called', () => {
   const o = new ClosedConnector();
   const t = new ClosedConnector();

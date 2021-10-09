@@ -23,8 +23,8 @@ export class DuplexConnector<
   responser: ResponseConnector<InReqEvents, OutResponseEventMap>;
 
   constructor(
-    private transfererRequests: EventTransfererAsync<OutReqEvents>,
-    private transfererResponses: EventTransfererAsync<OutResponseEventMap[keyof OutResponseEventMap]>,
+    transfererRequests: EventTransfererAsync<OutReqEvents>,
+    transfererResponses: EventTransfererAsync<OutResponseEventMap[keyof OutResponseEventMap]>,
     responses?: Partial<ResponseMap<RequestEvent, OutResponseEventMap>>,
     options?: DuplexConnectorOptions<InResponseEventMap[keyof InResponseEventMap]>
   ) {
