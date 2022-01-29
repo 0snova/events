@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "lib": [
+      "ES2015",
+      "WebWorker"
+    ],
     "declaration": true,
     "declarationDir": "dist",
     "downlevelIteration": true,
