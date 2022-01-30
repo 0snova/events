@@ -61,7 +61,7 @@ export class ResponseConnector<
 
     this.responseHandlers[requestEventType] = responseCreator;
 
-    return this.on(requestEventType, async (requestEvent) => {
+    const unsubscribe = this.on(requestEventType, async (requestEvent) => {
       const response = makeResponseEvent(
         requestEvent,
         String(`${requestEvent.id}-${this.lastEventId++}`),
@@ -73,5 +73,10 @@ export class ResponseConnector<
         afterResponse(response);
       }
     });
+
+    return () => {
+      unsubscribe();
+      this.responseHandlers[requestEventType] = null;
+    };
   }
 }
